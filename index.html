@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>運動數據公益平臺 - 示範API呼叫網頁</title>
+    <title>運動數據查詢</title>
+    <style>
+        /* CSS樣式，可自行調整 */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        form {
+            margin: 20px auto;
+            width: 300px;
+        }
+    </style>
 </head>
 <body>
-    <form method="POST">
+    <form id="queryForm">
         <label for="membername">帳號:</label>
         <input type="text" id="membername" name="membername"><br><br>
         
         <label for="password">密碼:</label>
-        <input type="text" id="password" name="password"><br><br>
+        <input type="password" id="password" name="password"><br><br>
 
         <label for="main_type">運動主類型(main_type):</label>
         <input type="text" id="main_type" name="main_type"><br><br>
@@ -19,19 +30,19 @@
 
         <label for="subtype">運動子類型(subtype):</label>
         <input type="text" id="subtype" name="subtype"><br><br>
-        
-        <input type="submit" value="查詢">
-    </form>
-    <div id="result"></div>
 
-    <script>
-        // 使用 JavaScript 將 JSON 渲染到 HTML
-        function renderJSON(data) {
-            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-        }
-    </script>
+        <label for="data_size">回傳筆數(data_size):</label>
+        <input type="text" id="data_size" name="data_size"><br><br>
+        
+        <button type="submit">查詢</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
+
 
 <script>
     const form = document.getElementById('queryForm');
@@ -43,6 +54,10 @@
         const membername = document.getElementById('membername').value;
         const password = document.getElementById('password').value;
         // ... 其他欄位的值
+        const main_type = document.getElementById('main_type').value;
+        const sport_type = document.getElementById('sport_type').value;
+        const subtype = document.getElementById('subtype').value;
+        const data_size = document.getElementById('data_size').value;
 
         // 組成登入請求的 JSON
         const loginData = {
@@ -68,7 +83,10 @@
                 'Authorization': `Bearer ${token}`
             };
             const parameters = {
-                // ... 其他參數
+                'main_type': main_type, 
+                'type': sport_type, 
+                'subtype': subtype, 
+                'data_size': data_size
             };
     
             // 發送查詢請求
@@ -78,6 +96,7 @@
                 // 如果有 parameters，則使用 URLSearchParams
                 // const params = new URLSearchParams(parameters);
                 // ...
+                params: parameters
             });
 
             const queryJson = await queryResponse.json();
