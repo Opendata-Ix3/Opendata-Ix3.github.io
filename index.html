@@ -1,111 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>運動數據查詢</title>
-    <style>
-        /* CSS樣式，可自行調整 */
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        form {
-            margin: 20px auto;
-            width: 300px;
-        }
-    </style>
+  <title>運動數據查詢</title>
+  <style>
+    /* CSS樣式，可自行調整 */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    form {
+      margin: 20px auto;
+      width: 600px;
+    }
+  </style>
 </head>
 <body>
-    <form id="queryForm">
-        <label for="membername">帳號:</label>
-        <input type="text" id="membername" name="membername"><br><br>
-        
-        <label for="password">密碼:</label>
-        <input type="password" id="password" name="password"><br><br>
+  <form id="queryForm">
+    <label for="memberName">帳號:</label>
+    <input type="text" id="memberName" name="memberName"><br><br>
 
-        <label for="main_type">運動主類型(main_type):</label>
-        <input type="text" id="main_type" name="main_type"><br><br>
+    <label for="password">密碼:</label>
+    <input type="password" id="password" name="password"><br><br>
 
-        <label for="sport_type">運動類型(type):</label>
-        <input type="text" id="sport_type" name="sport_type"><br><br>
+    <label for="mainType">運動主類型(main_type):</label>
+    <input type="text" id="mainType" name="mainType"><br><br>
 
-        <label for="subtype">運動子類型(subtype):</label>
-        <input type="text" id="subtype" name="subtype"><br><br>
+    <label for="sportType">運動類型(type):</label>
+    <input type="text" id="sportType" name="sportType"><br><br>
 
-        <label for="data_size">回傳筆數(data_size):</label>
-        <input type="text" id="data_size" name="data_size"><br><br>
-        
-        <button type="submit">查詢</button>
-    </form>
-    
-    <div id="result"></div>
-    
-    <script src="script.js"></script>
+    <label for="subtype">運動子類型(subtype):</label>
+    <input type="text" id="subtype" name="subtype"><br><br>
+
+    <label for="dataSize">回傳筆數(data_size):</label>
+    <input type="text" id="dataSize" name="dataSize"><br><br>
+
+    <button type="submit">查詢</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
-
-<script>
-    const form = document.getElementById('queryForm');
-    const resultDiv = document.getElementById('result');
-
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const membername = document.getElementById('membername').value;
-        const password = document.getElementById('password').value;
-        // ... 其他欄位的值
-        const main_type = document.getElementById('main_type').value;
-        const sport_type = document.getElementById('sport_type').value;
-        const subtype = document.getElementById('subtype').value;
-        const data_size = document.getElementById('data_size').value;
-
-        // 組成登入請求的 JSON
-        const loginData = {
-            'membername': membername,
-            'password': password
-        };
-
-        try {
-            // 發送登入請求
-            const loginResponse = await fetch('https://api.data-sports.tw/member/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(loginData)
-            });
-    
-            const loginJson = await loginResponse.json();
-            const token = loginJson.data.token;
-    
-            // 組成查詢請求的 headers 和 parameters
-            const headers = {
-                'Authorization': `Bearer ${token}`
-            };
-            const parameters = {
-                'main_type': main_type, 
-                'type': sport_type, 
-                'subtype': subtype, 
-                'data_size': data_size
-            };
-    
-            // 發送查詢請求
-            const queryResponse = await fetch('https://api.data-sports.tw/data/processed', {
-                method: 'GET',
-                headers: headers,
-                // 如果有 parameters，則使用 URLSearchParams
-                // const params = new URLSearchParams(parameters);
-                // ...
-                params: parameters
-            });
-
-            const queryJson = await queryResponse.json();
-
-            // 將結果顯示在頁面上
-            resultDiv.textContent = JSON.stringify(queryJson, null, 2);
-        } catch (error) {
-            console.error('Error:', error);
-            resultDiv.textContent = '查詢失敗';
-        }
-    });
-</script>
