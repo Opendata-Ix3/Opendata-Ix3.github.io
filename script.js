@@ -44,7 +44,10 @@ form.addEventListener('submit', async (event) => {
     const params = new URLSearchParams(parameters);
 
     // 顯示加載提示
-    resultDiv.textContent = '正在查詢數據...';
+    const loadingDiv = document.createElement('div');
+    loadingDiv.textContent = '正在查詢數據...';
+    resultDiv.appendChild(loadingDiv);
+
 
     // 發送查詢請求
     const queryResponse = await fetch('https://api.data-sports.tw/data/processed', {
@@ -57,8 +60,10 @@ form.addEventListener('submit', async (event) => {
 
     // 查詢成功
     resultDiv.textContent = JSON.stringify(queryJson, null, 2);
+    loadingDiv.remove();
   } catch (error) {
     console.error('Error:', error);
-
-    // 查詢失敗
-    resultDiv
+    loadingDiv.remove();
+    resultDiv.textContent = '查詢失敗，請檢查網路連線或輸入參數是否正確。';
+  }
+});
