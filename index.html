@@ -7,6 +7,19 @@
     <form method="POST">
         <label for="membername">帳號:</label>
         <input type="text" id="membername" name="membername"><br><br>
+        
+        <label for="password">密碼:</label>
+        <input type="text" id="password" name="password"><br><br>
+
+        <label for="main_type">運動主類型(main_type):</label>
+        <input type="text" id="main_type" name="main_type"><br><br>
+
+        <label for="sport_type">運動類型(type):</label>
+        <input type="text" id="sport_type" name="sport_type"><br><br>
+
+        <label for="subtype">運動子類型(subtype):</label>
+        <input type="text" id="subtype" name="subtype"><br><br>
+        
         <input type="submit" value="查詢">
     </form>
     <div id="result"></div>
@@ -19,3 +32,61 @@
     </script>
 </body>
 </html>
+
+<script>
+    const form = document.getElementById('queryForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const membername = document.getElementById('membername').value;
+        const password = document.getElementById('password').value;
+        // ... 其他欄位的值
+
+        // 組成登入請求的 JSON
+        const loginData = {
+            'membername': membername,
+            'password': password
+        };
+
+        try {
+            // 發送登入請求
+            const loginResponse = await fetch('https://api.data-sports.tw/member/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            });
+    
+            const loginJson = await loginResponse.json();
+            const token = loginJson.data.token;
+    
+            // 組成查詢請求的 headers 和 parameters
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            };
+            const parameters = {
+                // ... 其他參數
+            };
+    
+            // 發送查詢請求
+            const queryResponse = await fetch('https://api.data-sports.tw/data/processed', {
+                method: 'GET',
+                headers: headers,
+                // 如果有 parameters，則使用 URLSearchParams
+                // const params = new URLSearchParams(parameters);
+                // ...
+            });
+
+            const queryJson = await queryResponse.json();
+
+            // 將結果顯示在頁面上
+            resultDiv.textContent = JSON.stringify(queryJson, null, 2);
+        } catch (error) {
+            console.error('Error:', error);
+            resultDiv.textContent = '查詢失敗';
+        }
+    });
+</script>
