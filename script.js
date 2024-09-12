@@ -27,7 +27,8 @@ form.addEventListener('submit', async (event) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(loginData)
+      body: JSON.stringify(loginData),
+      mode: 'no-cors'
     });
 
     if (!loginResponse.ok) {
