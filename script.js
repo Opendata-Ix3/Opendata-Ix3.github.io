@@ -17,6 +17,45 @@ form.addEventListener('submit', async (event) => {
     password
   };
 
+
+const form = document.getElementById('queryForm');
+const resultDiv = document.getElementById('result');
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  // ... (獲取表單資料與組成登入請求 JSON 的部分與之前相同)
+
+  // 發送登入請求並處理 JSONP 回應
+  const script = document.createElement('script');
+  script.src = `https://api.data-sports.tw/member/login?callback=handleLoginResponse&membername=${encodeURIComponent(memberName)}&password=${encodeURIComponent(password)}`;
+  document.head.appendChild(script);
+
+  // 處理登入回應
+  window.handleLoginResponse = (data) => {
+    const token = data.data.token;
+
+    // 組成查詢請求的 URL，並加入 JSONP callback 參數
+    const url = `https://api.data-sports.tw/data/processed?callback=handleQueryResponse&main_type=${encodeURIComponent(mainType)}&type=${encodeURIComponent(sportType)}&subtype=${encodeURIComponent(subtype)}&data_size=${encodeURIComponent(dataSize)}`;
+
+    // 發送查詢請求
+    const script = document.createElement('script');
+    script.src = url;
+    script.setAttribute('Authorization', `Bearer ${token}`);
+    document.head.appendChild(script);
+  };
+
+  // 處理查詢回應
+  window.handleQueryResponse = (data) => {
+    resultDiv.textContent = JSON.stringify(data, null, 2);
+  };
+});
+
+
+
+
+
+/*  
   try {
     // 發送登入請求
     const loginResponse = await fetch('https://api.data-sports.tw/member/login', {
@@ -67,3 +106,5 @@ form.addEventListener('submit', async (event) => {
     resultDiv.textContent = '查詢失敗，請檢查網路連線或輸入參數是否正確。';
   }
 });
+
+*/
