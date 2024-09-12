@@ -4,6 +4,7 @@ const resultDiv = document.getElementById('result');
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  // ... (獲取表單資料與組成登入請求 JSON 的部分與之前相同)
   const memberName = document.getElementById('memberName').value;
   const password = document.getElementById('password').value;
   const mainType = document.getElementById('mainType').value;
@@ -20,11 +21,7 @@ form.addEventListener('submit', async (event) => {
 
 const form = document.getElementById('queryForm');
 const resultDiv = document.getElementById('result');
-
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  // ... (獲取表單資料與組成登入請求 JSON 的部分與之前相同)
+  
 
   // 發送登入請求並處理 JSONP 回應
   const script = document.createElement('script');
